@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prime Aluminum Phularwan - Estimate & Quotation App</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #0284c7;
+      --accent-dark: #0369a1;
+      --green: #16a34a;
+      --amber: #d97706;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --border: #cbd5e1;
+      --text: #1e293b;
+      --muted: #64748b;
+    }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--text); }
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #fff; padding: 14px 18px;
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    header h1 { margin: 0; font-size: 1.25rem; letter-spacing: 0.3px; }
+    header p { margin: 2px 0 0; font-size: 0.8rem; color: #cbd5e1; }
+    .badge-offline {
+      background: rgba(34,197,94,0.2); border: 1px solid #4ade80; color: #86efac;
+      padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;
+    }
+    .container { max-width: 1320px; margin: 14px auto; padding: 0 12px; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 14px; }
+    @media (max-width: 960px) { .container { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+    .tab-btn {
+      flex: 1; min-width: 110px; padding: 10px 12px; border: 1px solid var(--border);
+      background: #f8fafc; color: var(--text); border-radius: 8px; cursor: pointer;
+      font-weight: 700; font-size: 0.88rem; text-align: center; transition: 0.15s;
+    }
+    .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 10px; }
+    label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--muted); margin-bottom: 3px; }
+    input, select {
+      width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 7px;
+      font-size: 0.9rem; background: #fff; color: var(--text);
+    }
+    input:focus, select:focus { outline: 2px solid var(--accent); border-color: transparent; }
+    .filter-pills { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; align-items: center; }
+    .pill {
+      padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border);
+      background: #f8fafc; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+    }
+    .pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .list-box {
+      max-height: 440px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      position: sticky; top: 0; background: #e2e8f0; color: #0f172a;
+      text-align: left; padding: 8px 6px; font-size: 0.78rem; z-index: 2;
+    }
+    td { padding: 7px 6px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+    tr.item-row { cursor: pointer; }
+    tr.item-row:hover { background: #f0f9ff; }
+    tr.item-row.checked { background: #e0f2fe; }
+    .chk { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+    .mini-input { width: 66px; padding: 4px 6px; font-size: 0.82rem; text-align: center; }
+    .btn {
+      padding: 9px 14px; border: none; border-radius: 8px; font-weight: 700;
+      cursor: pointer; font-size: 0.88rem; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-green { background: var(--green); color: #fff; }
+    .btn-amber { background: var(--amber); color: #fff; }
+    .btn-dark { background: var(--primary); color: #fff; }
+    .btn-outline { background: #fff; border: 1px solid var(--border); color: var(--text); }
+    .btn-sm { padding: 4px 8px; font-size: 0.75rem; border-radius: 6px; }
+    .group-header {
+      background: #1e293b; color: #fff; padding: 7px 10px; font-weight: 700;
+      display: flex; justify-content: space-between; align-items: center; border-radius: 6px; margin-top: 10px;
+    }
+    .totals-box {
+      background: #f8fafc; border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px; margin-top: 12px;
+    }
+    .total-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.92rem; }
+    .grand-total { font-size: 1.2rem; font-weight: 800; color: var(--primary); border-top: 2px solid var(--border); padding-top: 8px; }
+    .action-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .custom-add {
+      display: grid; grid-template-columns: 1.5fr 0.8fr 0.7fr 0.7fr auto; gap: 6px;
+      margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);
+    }
+    @media (max-width: 600px) { .custom-add { grid-template-columns: 1fr 1fr; } }
+
+    @media print {
+      body { background: #fff; }
+      header, .no-print { display: none !important; }
+      .container { display: block; max-width: 100%; margin: 0; padding: 0; }
+      .card { border: none; box-shadow: none; padding: 0; }
+      .print-only-header { display: block !important; text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 12px; }
+    }
+    .print-only-header { display: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>PRIME ALUMINUM PHULARWAN | پرائم ایلومینیم پھلروان</h1>
+    <p>Aluminum Sections (03-April-2026 List), Glass &amp; Hardware Estimate System</p>
+  </div>
+  <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+    <span class="badge-offline">● 100% Offline Ready</span>
+    <button class="btn btn-green btn-sm" onclick="downloadHTML()">⬇ Save App File (index.html)</button>
+  </div>
+</header>
+
+<div class="container">
+  <!-- LEFT PANEL: SELECTOR -->
+  <div class="card no-print">
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-alu" onclick="switchTab('alu')">1. Aluminum Sections</button>
+      <button class="tab-btn" id="tab-glass" onclick="switchTab('glass')">2. Glass (شیشہ)</button>
+      <button class="tab-btn" id="tab-hw" onclick="switchTab('hw')">3. Hardware (ہارڈویئر)</button>
+    </div>
+
+    <!-- Window / Size Group Controls -->
+    <div class="controls-grid">
+      <div>
+        <label>Window / Door Group (ونڈو یا سائز کا نام)</label>
+        <div style="display:flex; gap:5px;">
+          <input type="text" id="groupName" value="Window #1 (5x4)" placeholder="e.g. Window #1 (5x4)" />
+          <button class="btn btn-dark btn-sm" onclick="newGroup()" title="New Window Group">+ New</button>
+        </div>
+      </div>
+      <div id="colorBox">
+        <label>Aluminum Finish / Color (کلر)</label>
+        <select id="colorSelect" onchange="renderCatalog()">
+          <option value="DULL">DULL</option>
+          <option value="BRO">BRO (Bronze)</option>
+          <option value="H.23">H.23</option>
+          <option value="RAL P.C">RAL P.C</option>
+          <option value="BLACK">BLACK</option>
+          <option value="SHARA">SHARA (Sahara)</option>
+          <option value="WOOD">WOOD</option>
+        </select>
+      </div>
+      <div>
+        <label>Search Item / Section (تلاش کریں)</label>
+        <input type="text" id="searchInput" oninput="renderCatalog()" placeholder="Type DC26, M23, Glass, Lock..." />
+      </div>
+    </div>
+
+    <div class="filter-pills">
+      <button class="pill active" id="pill-all" onclick="setFilter('all')">All Items (سب)</button>
+      <button class="pill" id="pill-checked" onclick="setFilter('checked')">Ticked Only (<span id="checkedCount">0</span>)</button>
+      <button class="pill" onclick="clearChecks()">Uncheck All</button>
+    </div>
+
+    <div class="list-box">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:32px;">Tick</th>
+            <th>Section / Item Name</th>
+            <th>Category</th>
+            <th>Rate (Rs)</th>
+            <th>Size/Ft/SqFt</th>
+            <th>Qty</th>
+          </tr>
+        </thead>
+        <tbody id="catalogBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Add Custom Item -->
+    <div class="custom-add">
+      <input type="text" id="custName" placeholder="Custom Item Name (اپنی مرضی کا آئٹم)" />
+      <input type="number" id="custRate" placeholder="Rate (Rs)" />
+      <input type="number" id="custSize" placeholder="Ft / Size" value="1" />
+      <input type="number" id="custQty" placeholder="Qty" value="1" />
+      <button class="btn btn-outline btn-sm" onclick="addCustomItem()">+ Add</button>
+    </div>
+
+    <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+      <button class="btn btn-primary" style="flex:1;" onclick="addCheckedToQuote()">
+        ✓ Add Ticked Items to Quotation (<span id="btnTickCount">0</span>)
+      </button>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL: QUOTATION / ESTIMATE -->
+  <div class="card">
+    <div class="print-only-header">
+      <h2 style="margin:0;">PRIME ALUMINUM PHULARWAN</h2>
+      <p style="margin:3px 0;">پرائم ایلومینیم پھلروان — Aluminum, Glass &amp; Hardware Quotation</p>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+      <h3 style="margin:0;">Estimate / Quotation Bill</h3>
+      <span style="font-size:0.78rem; color:var(--muted);" id="quoteDate"></span>
+    </div>
+
+    <div class="controls-grid" style="margin-bottom:8px;">
+      <div>
+        <label>Customer Name (کسٹمر کا نام)</label>
+        <input type="text" id="custTitle" placeholder="Customer / Site Name" oninput="saveState()" />
+      </div>
+      <div>
+        <label>Phone / Address (فون / پتہ)</label>
+        <input type="text" id="custPhone" placeholder="03xx-xxxxxxx" oninput="saveState()" />
+      </div>
+    </div>
+
+    <div id="quoteContainer" style="max-height: 430px; overflow-y: auto; padding-right: 2px;"></div>
+
+    <div class="totals-box">
+      <div class="total-row">
+        <span>Aluminum Subtotal:</span>
+        <strong id="subAlu">Rs. 0</strong>
+      </div>
+      <div class="total-row">
+        <span>Glass Subtotal (شیشہ):</span>
+        <strong id="subGlass">Rs. 0</strong>
+      </div>
+      <div class="total-row">
+        <span>Hardware &amp; Other Subtotal:</span>
+        <strong id="subHw">Rs. 0</strong>
+      </div>
+      <div class="total-row no-print" style="align-items:center; margin-top:6px;">
+        <span>Fabrication / Labour / Discount (+/- Rs):</span>
+        <input type="number" id="extraCharges" value="0" style="width:110px; text-align:right;" oninput="renderQuote()" />
+      </div>
+      <div class="total-row grand-total">
+        <span>Grand Total (کل رقم):</span>
+        <span id="grandTotal">Rs. 0</span>
+      </div>
+    </div>
+
+    <div class="action-bar no-print">
+      <button class="btn btn-green" onclick="copyWhatsApp()">WhatsApp Copy</button>
+      <button class="btn btn-dark" onclick="window.print()">Print / Save PDF</button>
+      <button class="btn btn-amber" onclick="clearAllQuote()">Clear Bill</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Complete 03-April-2026 PA Premium Aluminum Rate List [DULL, BRO, H.23, RAL P.C, BLACK, SHARA, WOOD]
+const ALU_RAW = [
+  ["B.6","D-Series",[136,147,137,137,153,147,171]],
+  ["D.10","D-Series",[514,552,516,516,578,552,645]],
+  ["D.10 1.6MM","D-Series",[647,694,649,649,727,694,811]],
+  ["D.10 2MM","D-Series",[797,855,799,799,895,855,999]],
+  ["D.10A","D-Series",[655,768,714,714,819,768,869]],
+  ["D.10A 2MM","D-Series",[894,959,896,896,1004,959,1120]],
+  ["D.11","D-Series",[230,247,231,231,259,247,289]],
+  ["D.14","D-Series",[352,379,354,354,396,379,443]],
+  ["D.15","D-Series",[225,243,227,227,254,243,284]],
+  ["D.16","D-Series",[591,635,593,593,664,635,741]],
+  ["D.16 1.6MM","D-Series",[682,732,684,684,766,732,855]],
+  ["D.16 2MM","D-Series",[836,897,838,838,939,897,1048]],
+  ["D.18","D-Series",[628,674,630,630,706,674,788]],
+  ["D.18 2MM","D-Series",[1018,1091,1020,1020,1142,1091,1275]],
+  ["D.20","D-Series",[659,707,661,661,740,707,826]],
+  ["D.22","D-Series",[294,317,297,297,333,317,372]],
+  ["D.23","D-Series",[445,479,448,448,502,479,560]],
+  ["D.24","D-Series",[442,476,444,444,497,476,555]],
+  ["D.25","D-Series",[346,373,349,349,391,373,436]],
+  ["D.26","D-Series",[465,500,468,468,523,500,585]],
+  ["D.26A","D-Series",[506,544,509,509,570,544,635]],
+  ["D.27","D-Series",[522,562,525,525,588,562,657]],
+  ["D.28","D-Series",[363,391,365,365,408,391,457]],
+  ["D.29","D-Series",[273,293,274,274,307,293,343]],
+  ["D.29 1.6MM","D-Series",[351,378,353,353,395,378,441]],
+  ["D.29 2MM","D-Series",[402,432,404,404,452,432,505]],
+  ["D.29A","D-Series",[330,354,331,331,371,354,414]],
+  ["D.29B","D-Series",[169,182,170,170,190,182,213]],
+  ["D.29C","D-Series",[340,365,342,342,392,365,418]],
+  ["D.29D","D-Series",[289,311,292,292,325,311,364]],
+  ["D.29H","D-Series",[250,270,251,251,284,270,320]],
+  ["D.29T","D-Series",[124,134,125,125,140,134,156]],
+  ["D.30","D-Series",[435,469,437,437,489,469,548]],
+  ["D.31","D-Series",[190,204,191,191,214,204,239]],
+  ["D.32","D-Series",[105,113,106,106,119,113,133]],
+  ["D.32A","D-Series",[186,200,187,187,209,200,234]],
+  ["D.32B","D-Series",[196,211,197,197,221,211,246]],
+  ["D.33","D-Series",[578,621,580,580,650,621,725]],
+  ["D.33 1.6MM","D-Series",[767,823,769,769,861,823,961]],
+  ["D.33 2MM","D-Series",[936,1004,938,938,1051,1004,1173]],
+  ["D.35","D-Series",[494,531,496,496,556,531,620]],
+  ["D.35 1.6MM","D-Series",[631,677,633,633,709,677,791]],
+  ["D.35 2MM","D-Series",[763,819,765,765,857,819,956]],
+  ["D.38 2MM","D-Series",[798,856,800,800,896,856,1000]],
+  ["D.38B 2MM","D-Series",[578,621,580,580,650,621,725]],
+  ["D.38F 2MM","D-Series",[674,723,676,676,757,723,845]],
+  ["D.40","D-Series",[478,514,480,480,538,514,600]],
+  ["D.40 1.6MM","D-Series",[540,580,542,542,607,580,678]],
+  ["D.40 2MM","D-Series",[665,714,667,667,747,714,834]],
+  ["D.41","D-Series",[182,196,183,183,205,196,229]],
+  ["D.41A","D-Series",[146,157,147,147,165,157,184]],
+  ["D.42","D-Series",[318,342,320,320,358,342,400]],
+  ["D.42F/H","D-Series",[406,437,408,408,457,437,510]],
+  ["D.45 Color","D-Series",[484,521,487,487,545,521,609]],
+  ["D.45A","D-Series",[428,460,430,430,482,460,538]],
+  ["D.45A 1.6MM","D-Series",[540,580,542,542,607,580,678]],
+  ["D.45A 2MM","D-Series",[651,699,653,653,731,699,816]],
+  ["D.45B 1.6MM","D-Series",[591,635,593,593,664,635,741]],
+  ["D.45C","D-Series",[725,778,727,727,814,778,909]],
+  ["D.45F","D-Series",[534,574,536,536,600,574,670]],
+  ["D.46","D-Series",[859,921,861,861,964,921,1076]],
+  ["D.46 1.6MM","D-Series",[1085,1163,1087,1087,1217,1163,1359]],
+  ["D.46 2MM","D-Series",[1331,1426,1333,1333,1493,1426,1666]],
+  ["D.48H","D-Series",[1646,1763,1648,1648,1846,1763,2060]],
+  ["D.48 2MM","D-Series",[1180,1265,1182,1182,1324,1265,1478]],
+  ["D.48A","D-Series",[576,618,578,578,647,618,723]],
+  ["D.48A 1.4MM","D-Series",[657,705,659,659,738,705,824]],
+  ["D.48A 1.6MM","D-Series",[733,786,735,735,823,786,919]],
+  ["D.48A 2MM","D-Series",[919,985,921,921,1032,985,1151]],
+  ["D.48B 1.6MM","D-Series",[501,538,503,503,563,538,629]],
+  ["D.48B 2MM","D-Series",[601,645,603,603,675,645,754]],
+  ["D.48BH 1.6MM","D-Series",[505,548,511,511,574,548,639]],
+  ["D.48BH-K 1.6MM","D-Series",[463,490,474,474,506,490,527]],
+  ["D.49","D-Series",[200,217,203,203,223,217,250]],
+  ["D.50","D-Series",[551,592,553,553,619,592,691]],
+  ["D.50 1.6MM","D-Series",[705,756,707,707,792,756,884]],
+  ["D.50 2MM","D-Series",[849,911,851,851,953,911,1064]],
+  ["D.50A","D-Series",[488,524,490,490,549,524,613]],
+  ["D.50A 1.6MM","D-Series",[582,625,584,584,655,625,730]],
+  ["D.50A 2MM","D-Series",[708,760,710,710,795,760,888]],
+  ["D.50B 1.6MM","D-Series",[886,950,888,888,995,950,1110]],
+  ["D.50B 2MM","D-Series",[1091,1170,1093,1093,1224,1170,1366]],
+  ["D.51 2MM","D-Series",[899,968,902,902,1012,968,1129]],
+  ["D.51A","D-Series",[451,485,453,453,507,485,566]],
+  ["D.51A 1.6MM","D-Series",[557,598,559,559,626,598,699]],
+  ["D.51A 2MM","D-Series",[672,721,674,674,755,721,843]],
+  ["D.51B 1.6MM","D-Series",[737,784,739,739,822,784,989]],
+  ["D.51C","D-Series",[819,878,821,821,920,878,1026]],
+  ["D.51C 2MM","D-Series",[1270,1361,1272,1272,1425,1361,1590]],
+  ["D.51F/H","D-Series",[528,567,530,530,594,567,663]],
+  ["D.51F/H 1.6MM","D-Series",[663,712,665,665,745,712,831]],
+  ["D.51F/H 2MM","D-Series",[802,860,804,804,900,860,1005]],
+  ["D.51J (110mm)","D-Series",[526,567,530,530,594,567,664]],
+  ["D.51J (110mm) 1.6MM","D-Series",[675,773,722,722,804,773,827]],
+  ["D.52","D-Series",[432,464,434,434,486,464,543]],
+  ["D.54 COLOR","D-Series",[476,512,478,478,540,512,604]],
+  ["D.54A","D-Series",[395,425,397,397,445,425,496]],
+  ["D.54A 1.6MM","D-Series",[482,518,484,484,542,518,605]],
+  ["D.54A 2MM","D-Series",[578,621,580,580,650,621,725]],
+  ["D.54C","D-Series",[696,747,698,698,782,747,873]],
+  ["D.54C 1.6MM","D-Series",[850,900,852,852,964,900,1021]],
+  ["D.54F/H","D-Series",[484,520,486,486,544,520,608]],
+  ["D.54F/H 1.6MM","D-Series",[580,623,582,582,652,623,728]],
+  ["D.54F/H 2MM","D-Series",[700,751,702,702,786,751,878]],
+  ["D.57","D-Series",[757,812,759,759,850,812,949]],
+  ["D.58","D-Series",[506,544,508,508,569,544,635]],
+  ["D.59A SCREW","D-Series",[548,589,550,550,616,589,688]],
+  ["D.59A 1.6MM SCREW","D-Series",[674,723,676,676,757,723,845]],
+  ["D.59A 2MM SCREW","D-Series",[819,878,821,821,920,878,1026]],
+  ["D.59 WT SCREW","D-Series",[535,575,537,537,601,575,671]],
+  ["D.59 1.6MM WT SCREW","D-Series",[626,671,628,628,703,671,785]],
+  ["D.59 2MM WT SCREW","D-Series",[744,798,746,746,836,798,933]],
+  ["D.60","D-Series",[315,339,317,317,355,339,396]],
+  ["D.60A","D-Series",[400,434,408,408,458,434,507]],
+  ["D.61A","D-Series",[512,550,514,514,576,550,643]],
+  ["D.60TS","D-Series",[502,540,505,505,565,540,630]],
+  ["AL-10 1.6MM","AL Section",[726,779,728,728,815,779,910]],
+  ["AL-20 1.6MM","AL Section",[532,571,534,534,598,571,668]],
+  ["AL-33A 1.6MM","AL Section",[870,933,872,872,977,933,1090]],
+  ["AL-35 1.6MM","AL Section",[598,642,600,600,672,642,750]],
+  ["AL-35A 1.6MM","AL Section",[680,730,682,682,764,730,853]],
+  ["AL-58","AL Section",[612,657,614,614,688,657,768]],
+  ["L.33","Louver",[161,171,164,164,202,171,247]],
+  ["L.39","Louver",[221,238,222,222,249,238,278]],
+  ["L.39 1.6MM","Louver",[272,293,274,274,307,293,343]],
+  ["L.39 2MM","Louver",[366,394,369,369,421,394,470]],
+  ["L.39A 1.6MM","Louver",[691,718,694,694,753,718,841]],
+  ["L.39A 2MM","Louver",[837,864,841,841,902,864,1064]],
+  ["OVAL TUBE 2\"","Louver",[392,431,394,394,446,431,571]],
+  ["OVAL TUBE 4\"","Louver",[602,630,605,605,657,630,790]],
+  ["OVAL TUBE 4\" 1.6MM","Louver",[801,827,804,804,852,827,989]],
+  ["OVAL TUBE 6\"","Louver",[1046,1074,1048,1048,1113,1074,1312]],
+  ["DC.26","Normal Sliding",[775,831,777,777,870,831,971]],
+  ["DC.26A","Normal Sliding",[842,903,844,844,945,903,1055]],
+  ["DC.26B","Normal Sliding",[724,777,726,726,813,777,908]],
+  ["DC.26BA","Normal Sliding",[774,830,776,776,869,830,970]],
+  ["DC.26C","Normal Sliding",[774,830,776,776,869,830,970]],
+  ["DC.26E","Normal Sliding",[797,855,799,799,895,855,999]],
+  ["DC.26F/H","Normal Sliding",[878,942,880,880,986,942,1100]],
+  ["DC.26J (110mm)","Normal Sliding",[1045,1107,1047,1047,1135,1107,1263]],
+  ["DC.26JC","Normal Sliding",[870,933,872,872,977,933,1090]],
+  ["DC.30","Normal Sliding",[682,732,684,684,766,732,855]],
+  ["DC.30A","Normal Sliding",[728,781,730,730,818,781,913]],
+    ["DC.30B","Normal Sliding",[614,659,616,616,690,659,770]],
+  ["DC.30BA","Normal Sliding",[672,721,674,674,755,721,843]],
+  ["DC.30C","Normal Sliding",[672,721,674,674,755,721,843]],
+  ["DC.30E","Normal Sliding",[682,732,684,684,766,732,855]],
+  ["DC.30F/H","Normal Sliding",[752,807,754,754,844,807,943]],
+  ["DC.30J (110mm)","Normal Sliding",[850,902,852,852,940,902,1088]],
+  ["DC.30JC","Normal Sliding",[751,806,753,753,843,806,941]],
+  ["AA.23","Normal Sliding",[532,571,534,534,598,571,668]],
+  ["AA.28","Normal Sliding",[611,656,613,613,687,656,766]],
+  ["M.23","Normal Sliding",[352,379,354,354,396,379,443]],
+  ["M.23A","Normal Sliding",[363,391,365,365,409,391,456]],
+  ["M.23H","Normal Sliding",[430,463,432,432,486,463,541]],
+  ["M.24","Normal Sliding",[418,449,420,420,470,449,525]],
+  ["M.24A","Normal Sliding",[369,397,371,371,416,397,464]],
+  ["M.24E","Normal Sliding",[270,293,274,274,307,293,342]],
+  ["M.24F","Normal Sliding",[272,293,274,274,307,293,343]],
+  ["M.26","Normal Sliding",[580,623,582,582,652,623,728]],
+  ["M.26F","Normal Sliding",[678,728,680,680,762,728,850]],
+  ["M.26H","Normal Sliding",[349,370,351,351,389,370,432]],
+  ["M.28","Normal Sliding",[429,461,431,431,483,461,539]],
+  ["M.28A","Normal Sliding",[436,469,438,438,491,469,548]],
+  ["M.30","Normal Sliding",[520,559,522,522,585,559,653]],
+  ["M.30F","Normal Sliding",[610,655,612,612,685,655,765]],
+  ["M.30H","Normal Sliding",[303,325,307,307,353,325,398]],
